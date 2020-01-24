@@ -16,13 +16,14 @@ module.exports = {
 
     async store(req,res) {
 
-        const { github_username, techs, lat, lon } = req.body
+        const { github_username, techs, latitude, longitude } = req.body
 
         const respostaGit = await axios.get(`https://api.github.com/users/${github_username}`)
 
+
         let dev = await Dev.findOne({github_username})
 
-        if (dev == null) {
+        if (dev != null) {
             return res.json({"msg":"Já existe um dev com esse nome"})
         }
 
@@ -32,8 +33,10 @@ module.exports = {
 
         const location = {
             type: 'Point',
-            coordinates: [lon, lat]
+            coordinates: [longitude, latitude]
         }
+
+        
 
         dev = await Dev.create({
             github_username,
@@ -43,6 +46,9 @@ module.exports = {
             techs: techsArray,
             location
         })
+
+        
+        
 
         return res.json(dev)
 
